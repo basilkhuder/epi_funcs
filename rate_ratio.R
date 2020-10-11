@@ -2,7 +2,10 @@ rate_ratio <- function(rates, pop, digits, conf = "95", ...){
   UseMethod("rate_ratio")
   }
 
-rate_ratio.numeric <- function(rates, pops, digits = 5, conf = "95"){ 
+rate_ratio.numeric <- function(rates, 
+                               pops, 
+                               digits = 5, 
+                               conf = "95"){ 
   
   CONF <- dplyr::case_when(conf == "90" ~ 1.65,
             conf == "95" ~ 1.96,
