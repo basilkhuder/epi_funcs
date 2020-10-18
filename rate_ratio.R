@@ -1,4 +1,4 @@
-#' Calculates rate ratios and associated confidence intervals
+#' Calculates rate ratios (using standarized rates and population amounts) and associated confidence intervals
 #' @param rates A numeric vector of rates or the name of data.frame columns that contain rates
 #' @param pop A numeric vector of population amounts or the name of data frame columns that contain
 #' populations
