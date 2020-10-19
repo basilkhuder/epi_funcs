@@ -12,7 +12,9 @@
 #' @return A character vector or data frame with rates and confidence intervals
 #' @export
 #'
-#' @examples rate_ratio(rates = c(150, 100), pops = c(1000,5000), digits = 3, conf = "95")
+#' @examples rate_ratio(rates = c(150, 100), pop = c(1000,5000), digits = 3, conf = "95")
+#' @examples rate_ratio(df = rate_ratio_df, rates = c("rate_column_1", "rate_column_2"), pop = c("pop_column_1", "pop_column_2"),
+#` conf = "95", return_df = TRUE, digits = 5) 
 
 rate_ratio <- function(rates,
                        pop,
