@@ -1,9 +1,9 @@
 poutput <- function(df,
-                    cap = "",
                     fs = 15,
                     cw = .75,
                     ch = .25,
                     font = "Arial",
+                    cap = NULL,
                     output_type = NULL,
                     file_name = NULL) {
   
@@ -11,8 +11,11 @@ poutput <- function(df,
   df <- flextable::bold(df, part = "header")
   df <- flextable::fontsize(df, size = fs, part = "all")
   df <- flextable::align(df, align = "center", part = "all")
-  df <- flextable::set_caption(df, cap)
   df <- flextable::font(df, fontname = font, part = "all")
+  
+  if(!is.null(cap)){
+      df <- flextable::set_caption(df, cap)
+  } 
   
   if (is.null(output_type)) {
     return(df)
