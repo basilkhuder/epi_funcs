@@ -6,13 +6,12 @@ poutput <- function(df,
                     font = "Arial",
                     output_type = NULL,
                     file_name = NULL) {
-  
   df <- flextable::flextable(df)
   
-  if (length(cw) == 1){
+  if (length(cw) == 1) {
     df <- flextable::width(df, width = cw)
-  } else { 
-    for (i in seq_along(cw)){
+  } else {
+    for (i in seq_along(cw)) {
       df <- flextable::width(df, j = i, width = cw[[i]])
     }
   }
@@ -51,4 +50,5 @@ poutput <- function(df,
     flextable::save_as_docx(df, path = file_name, webshot = "webshot2")
     print(glue::glue("File saved as {file_name}"))
   }
+  
 }
