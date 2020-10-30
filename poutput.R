@@ -37,16 +37,19 @@ poutput <- function(df,
   if (output_type == "png") {
     file_name <- paste0(file_name, ".png")
     flextable::save_as_image(df, path = file_name, webshot = "webshot2")
+    print(glue::glue("File saved as {file_name}"))
   }
   
   if (output_type == "pdf") {
     file_name <- paste0(file_name, ".pdf")
     flextable::save_as_image(df, path = file_name, webshot = "webshot2")
+    print(glue::glue("File saved as {file_name}"))
   }
   
   if (output_type == "word") {
     file_name <- paste0(file_name, ".docx")
     flextable::save_as_docx(df, path = file_name, webshot = "webshot2")
+    print(glue::glue("File saved as {file_name}"))
   }
   
 }
