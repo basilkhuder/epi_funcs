@@ -26,7 +26,7 @@ poutput <- function(df,
   pobj <- flextable::set_caption(pobj, cap)
   
   if (!is.null(font)){ 
-    pobj <- flextable::font(pobj, fontname = "Arial", part = "all")
+    pobj <- flextable::font(pobj, fontname = font, part = "all")
   }
   
   if (is.null(output_type)) {
