@@ -8,12 +8,11 @@ poutput <- function(df,
                     font = NULL,
                     theme = "default") {
   pobj <- flextable::flextable(df)
+  pobj <- poutput.theme(pobj, theme = theme)
   
-  if (theme == "default") {
-    pobj <- poutput.theme(pobj, "default")
-  }
-  
-  if (length(cw) == 1) {
+  if (length(cw) > ncol(df) | length(cw) < ncol(df)) {
+    stop("Column width must equal the amount of columns or be a single number")
+  } else if (length(cw) == 1) {
     pobj <- flextable::width(pobj, width = cw)
   } else {
     for (i in seq_along(cw)) {
