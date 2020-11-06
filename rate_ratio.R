@@ -23,8 +23,9 @@ rate_ratio <- function(rates,
                        df,
                        return_df...) {
   
-  conf_cv <- c(1.65, 1.96, 2.58)
-  names(conf_cv) <- c("90","95","99")
+  conf_cv <- setNames(c(1.65, 1.96, 2.58), c("90", "95", "99"))
+  df_type <- setNames(c("tibble","data.frame"), 
+                      c("tbl_df", "data.frame"))
   UseMethod("rate_ratio")
 }
 
@@ -68,14 +69,20 @@ rate_ratio.character <- function(rates,
                                  conf = "95",
                                  return_df = TRUE) {
   
-  if(class(df)[1] == "data.frame"){ 
-    return(rate_ratio.data.frame(rates, pop, df, digits, rr_digits, conf, return_df))
-  } else if(class(df)[1] == "tbl_df"){ 
-    return(rate_ratio.tbl_df(rates, pop, df, digits, rr_digits, conf, return_df))
-  } else { 
-    stop("df must be either a data frame or a tibble")
+  rates <- magrittr::extract(df, rates)
+  rates <- round(rates[[1]] / rates[[2]], digits = rr_digits)
+  pop <- magrittr::extract(df, pop)
+  pop <- sqrt(1 / pop[[1]] + 1 / pop[[2]])
+  ul <- round(exp(log(rates) + (conf_cv[[conf]] * pop)), digits = digits)
+  ll <- round(exp(log(rates) - (conf_cv[[conf]] * pop)), digits = digits)
+  if (isFALSE(return_df)) {
+    df_cols <- '(Ratio = rates, CI = glue::glue("{ll} - {ul}"))'
+    expr_call <- paste0(df_type[[class(df)[1]]], df_cols)
+    df <- eval(rlang::parse_expr(expr_call))
+  } else {
+    df <- dplyr::mutate(df, Ratio = rates, CI = glue::glue("{ll} - {ul}"))
   }
-  
+  return(df)
 }
 
 rate_ratio.data.frame <- function(rates,
@@ -86,18 +93,8 @@ rate_ratio.data.frame <- function(rates,
                                   conf = "95",
                                   return_df = TRUE) { 
   
-  rates <- magrittr::extract(df, rates)
-  rates <- round(rates[[1]] / rates[[2]], digits = rr_digits)
-  pop <- magrittr::extract(df, pop)
-  pop <- sqrt(1 / pop[[1]] + 1 / pop[[2]])
-  ul <- round(exp(log(rates) + (conf_cv[[conf]] * pop)), digits = digits)
-  ll <- round(exp(log(rates) - (conf_cv[[conf]] * pop)), digits = digits)
-  if (isFALSE(return_df)) {
-    return(data.frame(Ratio = rates, CI = glue::glue("{ll} - {ul}")))
-  } else {
-    df <- dplyr::mutate(df, Ratio = rates, CI = glue::glue("{ll} - {ul}"))
-  }
-  return(df)
+  #TODO
+ 
 }
 
 rate_ratio.tbl_df <- function(rates,
@@ -106,17 +103,6 @@ rate_ratio.tbl_df <- function(rates,
                               digits = 5,
                               conf = "95",
                               return_df = TRUE) { 
-
-  rates <- magrittr::extract(df, rates)
-  rates <- round(rates[[1]] / rates[[2]], digits = rr_digits)
-  pop <- magrittr::extract(df, pop)
-  pop <- sqrt(1 / pop[[1]] + 1 / pop[[2]])
-  ul <- round(exp(log(rates) + (conf_cv[[conf]] * pop)), digits = digits)
-  ll <- round(exp(log(rates) - (conf_cv[[conf]] * pop)), digits = digits)
-  if (isFALSE(return_df)) {
-    return(tibble::tibble(Ratio = rates, CI = glue::glue("{ll} - {ul}")))
-  } else {
-    df <- dplyr::mutate(df, Ratio = rates, CI = glue::glue("{ll} - {ul}"))
-  }
-  return(df)
+ 
+  #TODO 
 }
