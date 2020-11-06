@@ -1,4 +1,4 @@
-#' Calculates rate ratios (using standardized rates and population or death amounts) and associated confidence intervals
+#' Calculates rate ratios (using standardized rates) and associated confidence intervals (using population or death amounts and assuming a poisson distribution.) 
 #' @param rates A numeric vector of rates or the name of data.frame columns that contain rates
 #' @param pop A numeric vector of population or death amounts or the name of data frame columns that contain
 #' populations/deaths
@@ -11,11 +11,10 @@
 #' return the input data frame with two new columns for rates and CIs added. 
 #' @param conf The confidence interval you'd like
 #' @return A character vector or data frame with rates and confidence intervals
-#' @export
-#'
 #' @examples rate_ratio(rates = c(150, 100), pop = c(1000,5000), digits = 3, conf = "95")
 #' @examples rate_ratio(df = rate_ratio_df, rates = c("rate_column_1", "rate_column_2"), pop = c("pop_column_1", "pop_column_2"),
 #` conf = "95", return_df = TRUE, digits = 5) 
+#' @export
 
 rate_ratio <- function(rates,
                        pop,
@@ -26,7 +25,6 @@ rate_ratio <- function(rates,
   
   conf_cv <- c(1.65, 1.96, 2.58)
   names(conf_cv) <- c("90","95","99")
-  
   UseMethod("rate_ratio")
 }
 
