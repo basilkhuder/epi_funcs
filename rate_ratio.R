@@ -96,6 +96,7 @@ rate_ratio.tbl_df <- function(rates,
                               pop,
                               df,
                               digits = 5,
+                              rr_digits,
                               conf = "95",
                               return_df = TRUE) {
   #TODO
