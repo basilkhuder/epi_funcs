@@ -1,9 +1,10 @@
-#' Calculates rate ratios (using standarized rates and population amounts) and associated confidence intervals
+#' Calculates rate ratios (using standardized rates and population or death amounts) and associated confidence intervals
 #' @param rates A numeric vector of rates or the name of data.frame columns that contain rates
-#' @param pop A numeric vector of population amounts or the name of data frame columns that contain
-#' populations
-#' @param df If rates and population are given as column names, the name of the data frame must be 
+#' @param pop A numeric vector of population or death amounts or the name of data frame columns that contain
+#' populations/deaths
+#' @param df If rates and population/deaths are given as column names, the name of the data frame must be 
 #' specified
+#' @param rr_digits The number of digits the Rate Ratio should be rounded to
 #' @param digits The number of digits the confidence intervals should be rounded to 
 #' @param return_df If you'd like the results returned as a data frame or not. If the inputs are numeric
 #' vectors, return_df will return a 1 by 2 data frame. If inputs are data frame columns, return_df will
@@ -22,32 +23,50 @@ rate_ratio <- function(rates,
                        conf = "95",
                        df,
                        return_df...) {
+  
+  conf_cv <- c(1.65, 1.96, 2.58)
+  names(conf_cv) <- c("90","95","99")
+  
   UseMethod("rate_ratio")
+}
+
+#' @export
+rate_ratio.list <- function(rates, 
+                            pop, 
+                            digits, 
+                            conf,
+                            rr_digits) {
+  
+  for (i in seq_along(rates[-1])) { 
+    rr = round(rates[[i]] / rates[[1]], digits = rr_digits)
+    se = sqrt(1 / pop[[i]] + 1 / pop[[1]])
+    ul <- round(exp(log(rates[[i]]) + (conf_cv[[conf]] * se)), digits = digits)
+    ll <- round(exp(log(rates[[i]]) - (conf_cv[[conf]] * se)), digits = digits)
+    return(glue::glue("{rr} ({ul} to {ll})"))
+  }
 }
 
 #' @export
 rate_ratio.numeric <- function(rates,
                                pop,
                                digits = 5,
-                               conf = "95",
-                               return_df = FALSE) {
-  
-  conf_cv <- dplyr::case_when(conf == "90" ~ 1.65,
-                           conf == "95" ~ 1.96,
-                           conf == "99" ~ 2.58)
+                               rr_digits = 3, 
+                               conf = "95") {
   
   rates <- rates[[1]] / rates[[2]]
   se <- sqrt(1 / pop[[1]] + 1 / pop[[2]])
-  ul <- round(exp(log(rates) + (conf_cv * se)), digits = digits)
-  ll <- round(exp(log(rates) - (conf_cv * se)), digits = digits)
-  return(glue::glue("Ratio: {rates} \n {conf}% CI: {ul} - {ll}"))
-}
+  ul <- round(exp(log(rates) + (conf_cv[[conf]] * se)), digits = digits)
+  ll <- round(exp(log(rates) - (conf_cv[[conf]] * se)), digits = digits)
+  return(glue::glue("{rr} ({ul} to {ll})"))
+  
+} 
 
 #' @export
 rate_ratio.character <- function(rates,
                                  pop,
                                  df,
                                  digits = 5,
+                                 rr_digits = 3,
                                  conf = "95",
                                  return_df = TRUE) {
   
@@ -56,28 +75,25 @@ rate_ratio.character <- function(rates,
   } else if(class(df)[1] == "tbl_df"){ 
     return(rate_ratio.tbl_df(rates, pop, df, digits, conf, return_df))
   } else { 
-    stop("Df must be either a data frame or a tibble")
-    }
-
-}
+    stop("df must be either a data frame or a tibble")
+  }
   
-rate_ratio.data.frame <- function(rates,
-                                 pop,
-                                 df,
-                                 digits = 5,
-                                 conf = "95",
-                                 return_df = TRUE) { 
+}
 
-  conf_cv <- dplyr::case_when(conf == "90" ~ 1.65,
-                           conf == "95" ~ 1.96,
-                           conf == "99" ~ 2.58)
+rate_ratio.data.frame <- function(rates,
+                                  pop,
+                                  df,
+                                  digits = 5,
+                                  rr_digits,
+                                  conf = "95",
+                                  return_df = TRUE) { 
   
   rates <- magrittr::extract(df, rates)
   rates <- rates[[1]] / rates[[2]]
   pop <- magrittr::extract(df, pop)
   pop <- sqrt(1 / pop[[1]] + 1 / pop[[2]])
-  ul <- round(exp(log(rates) + (conf_cv * pop)), digits = digits)
-  ll <- round(exp(log(rates) - (conf_cv * pop)), digits = digits)
+  ul <- round(exp(log(rates) + (conf_cv[[conf]] * pop)), digits = digits)
+  ll <- round(exp(log(rates) - (conf_cv[[conf]] * pop)), digits = digits)
   if (isFALSE(return_df)) {
     return(data.frame(Ratio = rates, CI = glue::glue("{ll} - {ul}")))
   } else {
@@ -87,22 +103,18 @@ rate_ratio.data.frame <- function(rates,
 }
 
 rate_ratio.tbl_df <- function(rates,
-                                  pop,
-                                  df,
-                                  digits = 5,
-                                  conf = "95",
-                                  return_df = TRUE) { 
-  
-  conf_cv <- dplyr::case_when(conf == "90" ~ 1.65,
-                              conf == "95" ~ 1.96,
-                              conf == "99" ~ 2.58)
-  
+                              pop,
+                              df,
+                              digits = 5,
+                              conf = "95",
+                              return_df = TRUE) { 
+
   rates <- magrittr::extract(df, rates)
   rates <- rates[[1]] / rates[[2]]
   pop <- magrittr::extract(df, pop)
   pop <- sqrt(1 / pop[[1]] + 1 / pop[[2]])
-  ul <- round(exp(log(rates) + (conf_cv * pop)), digits = digits)
-  ll <- round(exp(log(rates) - (conf_cv * pop)), digits = digits)
+  ul <- round(exp(log(rates) + (conf_cv[[conf]] * pop)), digits = digits)
+  ll <- round(exp(log(rates) - (conf_cv[[conf]] * pop)), digits = digits)
   if (isFALSE(return_df)) {
     return(tibble::tibble(Ratio = rates, CI = glue::glue("{ll} - {ul}")))
   } else {
