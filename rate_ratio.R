@@ -76,8 +76,7 @@ rate_ratio.character <- function(rates,
     expr_call <- paste0(df_type[[class(df)[1]]], df_cols)
     df <- eval(rlang::parse_expr(expr_call))
   } else {
-    df <-
-      dplyr::mutate(df, Ratio = rates, CI = glue::glue("{ll} - {ul}"))
+    df <- dplyr::mutate(df, Ratio = rates, CI = glue::glue("{ll} - {ul}"))
   }
   return(df)
 }
