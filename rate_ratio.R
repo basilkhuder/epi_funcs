@@ -4,7 +4,7 @@
 #' populations/deaths
 #' @param df If rates and population/deaths are given as column names, the name of the data frame must be 
 #' specified
-#' @param rr_digits The number of digits the Rate Ratio should be rounded to
+#' @param rr_digits The number of digits the rate ratio should be rounded to
 #' @param digits The number of digits the confidence intervals should be rounded to 
 #' @param return_df If you'd like the results returned as a data frame or not. If the inputs are numeric
 #' vectors, return_df will return a 1 by 2 data frame. If inputs are data frame columns, return_df will
@@ -69,9 +69,9 @@ rate_ratio.character <- function(rates,
                                  return_df = TRUE) {
   
   if(class(df)[1] == "data.frame"){ 
-    return(rate_ratio.data.frame(rates, pop, df, digits, conf, return_df))
+    return(rate_ratio.data.frame(rates, pop, df, digits, rr_digits, conf, return_df))
   } else if(class(df)[1] == "tbl_df"){ 
-    return(rate_ratio.tbl_df(rates, pop, df, digits, conf, return_df))
+    return(rate_ratio.tbl_df(rates, pop, df, digits, rr_digits, conf, return_df))
   } else { 
     stop("df must be either a data frame or a tibble")
   }
