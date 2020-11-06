@@ -53,7 +53,7 @@ rate_ratio.numeric <- function(rates,
                                rr_digits = 3, 
                                conf = "95") {
   
-  rates <- rates[[1]] / rates[[2]]
+  rates <- round(rates[[1]] / rates[[2]], digits = rr_digits)
   se <- sqrt(1 / pop[[1]] + 1 / pop[[2]])
   ul <- round(exp(log(rates) + (conf_cv[[conf]] * se)), digits = digits)
   ll <- round(exp(log(rates) - (conf_cv[[conf]] * se)), digits = digits)
@@ -89,7 +89,7 @@ rate_ratio.data.frame <- function(rates,
                                   return_df = TRUE) { 
   
   rates <- magrittr::extract(df, rates)
-  rates <- rates[[1]] / rates[[2]]
+  rates <- round(rates[[1]] / rates[[2]], digits = rr_digits)
   pop <- magrittr::extract(df, pop)
   pop <- sqrt(1 / pop[[1]] + 1 / pop[[2]])
   ul <- round(exp(log(rates) + (conf_cv[[conf]] * pop)), digits = digits)
@@ -110,7 +110,7 @@ rate_ratio.tbl_df <- function(rates,
                               return_df = TRUE) { 
 
   rates <- magrittr::extract(df, rates)
-  rates <- rates[[1]] / rates[[2]]
+  rates <- round(rates[[1]] / rates[[2]], digits = rr_digits)
   pop <- magrittr::extract(df, pop)
   pop <- sqrt(1 / pop[[1]] + 1 / pop[[2]])
   ul <- round(exp(log(rates) + (conf_cv[[conf]] * pop)), digits = digits)
