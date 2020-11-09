@@ -1,0 +1,14 @@
+Package: epifuncs
+Title: epi_funcs
+Version: 1.0.0
+Authors@R: 
+    person(given = "Basil",
+           family = "Khuder",
+           role = c("aut", "cre"),
+	   email = "bkhuderr@outlook.com")
+Description: Some epi functions
+Encoding: UTF-8
+LazyData: true
+Imports:
+	magrittr
+RoxygenNote: 7.1.1
