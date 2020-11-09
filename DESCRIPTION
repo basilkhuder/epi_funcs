@@ -10,5 +10,8 @@ Description: Some epi functions
 Encoding: UTF-8
 LazyData: true
 Imports:
-	magrittr
+	magrittr,
+	stringr,
+	dplyr,
+	flextable
 RoxygenNote: 7.1.1
