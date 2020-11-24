@@ -83,7 +83,7 @@ poutput.theme <- function(pobj, theme) {
     border <- officer::fp_border(color = "black", width = 2)
     pobj <- flextable::hline_top(pobj, border = border)
     pobj <- flextable::hline_top(pobj, border = border, part = "all")
-    pobj <- flextable::flextable::bold(pobj, part = "header")
+    pobj <- flextable::bold(pobj, part = "header")
     pobj <- flextable::align(pobj, align = "center", part = "all")
     pobj <- flextable::font(pobj, fontname = "Arial", part = "all")
   }
