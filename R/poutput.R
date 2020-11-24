@@ -9,15 +9,17 @@ poutput <- function(df,
                     font = NULL,
                     theme = "default",
                     add_header_bot = NULL) {
-  
   pobj <- flextable::flextable(df)
   
-  if (!is.null(add_header_bot)){ 
-    pobj <- flextable::add_header_row(pobj, top = FALSE, values = add_header_bot)
+  if (!is.null(add_header_bot)) {
+    pobj <-
+      flextable::add_header_row(pobj, top = FALSE, values = add_header_bot)
     theme <- "header_bot_default"
   }
   
-  pobj <- poutput.theme(pobj, theme = theme, font = font)
+  pobj <- poutput.theme(pobj, 
+                        theme = theme, 
+                        font = font)
   
   if (length(cw) > ncol(df) | length(cw) < ncol(df)) {
     stop("Column width must equal the amount of columns or be a single number")
@@ -67,11 +69,12 @@ poutput <- function(df,
   
 }
 
-poutput.theme <- function(pobj, theme, font) {
-  
-  if (is.null(font)){ 
+poutput.theme <- function(pobj, 
+                          theme, 
+                          font) {
+  if (is.null(font)) {
     font <- "Arial"
-   } 
+  }
   
   if (theme == "default") {
     pobj <- flextable::bold(pobj, part = "header")
@@ -83,7 +86,8 @@ poutput.theme <- function(pobj, theme, font) {
     pobj <- flextable::border_remove(pobj)
     border <- officer::fp_border(color = "black", width = 2)
     pobj <- flextable::hline_top(pobj, border = border)
-    pobj <- flextable::hline_top(pobj, border = border, part = "all")
+    pobj <-
+      flextable::hline_top(pobj, border = border, part = "all")
     pobj <- flextable::bold(pobj, part = "header")
     pobj <- flextable::align(pobj, align = "center", part = "all")
     pobj <- flextable::font(pobj, fontname = "Arial", part = "all")
