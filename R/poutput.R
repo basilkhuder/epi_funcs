@@ -3,11 +3,20 @@ poutput <- function(df,
                     fs = 15,
                     cw = .75,
                     ch = .25,
+                    fch = "black",
                     output_type = NULL,
                     file_name = NULL,
                     font = NULL,
-                    theme = "default") {
+                    theme = "default",
+                    add_header_bot = NULL) {
+  
   pobj <- flextable::flextable(df)
+  
+  if (!is.null(add_header_bot)){ 
+    pobj <- flextable::add_header_row(pobj, top = FALSE, values = add_header_bot)
+    theme <- "header_bot_default"
+  }
+  
   pobj <- poutput.theme(pobj, theme = theme)
   
   if (length(cw) > ncol(df) | length(cw) < ncol(df)) {
@@ -21,6 +30,7 @@ poutput <- function(df,
   }
   
   pobj <- flextable::fontsize(pobj, size = fs, part = "all")
+  pobj <- flextable::color(pobj, color = fch, part = "header")
   pobj <- flextable::set_caption(pobj, cap)
   
   if (!is.null(font)) {
@@ -61,10 +71,19 @@ poutput <- function(df,
   
 }
 
-
 poutput.theme <- function(pobj, theme) {
   if (theme == "default") {
     pobj <- flextable::bold(pobj, part = "header")
+    pobj <- flextable::align(pobj, align = "center", part = "all")
+    pobj <- flextable::font(pobj, fontname = "Arial", part = "all")
+  }
+  
+  if (theme == "header_bot_default") {
+    pobj <- flextable::border_remove(pobj)
+    border <- officer::fp_border(color = "black", width = 2)
+    pobj <- flextable::hline_top(pobj, border = border)
+    pobj <- flextable::hline_top(pobj, border = border, part = "all")
+    pobj <- flextable::flextable::bold(pobj, part = "header")
     pobj <- flextable::align(pobj, align = "center", part = "all")
     pobj <- flextable::font(pobj, fontname = "Arial", part = "all")
   }
