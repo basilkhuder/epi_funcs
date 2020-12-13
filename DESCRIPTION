@@ -13,5 +13,7 @@ Imports:
 	magrittr,
 	stringr,
 	dplyr,
-	flextable
+	flextable,
+	optmatch,
+	LaF
 RoxygenNote: 7.1.1
