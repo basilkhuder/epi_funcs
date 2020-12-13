@@ -1,1 +1,4 @@
 importFrom(magrittr,"%<>%")
+export(optmatch_chunk)
+export(poutput)
+export(rate_ratio)
