@@ -16,7 +16,7 @@ pairmatch_chunks <- function(d, prev, form, controls = 1){
 } 
 
 optmatch_chunk <- function(data, formula, controls = 1) { 
-  data <- LaF::laf_open(detect_dm_csv("data.csv", header = TRUE))
+  data <- LaF::laf_open(LaF::detect_dm_csv(data, header = TRUE))
   return(LaF::process_blocks(data, fun = pairmatch_chunks, 
                         form =  formula,
                         controls = controls,
