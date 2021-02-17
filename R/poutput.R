@@ -8,8 +8,17 @@ poutput <- function(df,
                     file_name = NULL,
                     font = NULL,
                     theme = "default",
+                    add_footnote = NULL,
                     add_header_bot = NULL) {
+  
   pobj <- flextable::flextable(df)
+  
+  if (!is.null(add_footnote)){ 
+    pobj <- flextable::footnote(pobj, i = 1, j = add_footnote[[1]], 
+                                ref_symbols = add_footnote[[2]],
+                                value = flextable::as_paragraph(add_footnote[[3]]),
+                                part = "header")
+  }
   
   if (!is.null(add_header_bot)) {
     pobj <-
@@ -17,9 +26,7 @@ poutput <- function(df,
     theme <- "header_bot_default"
   }
   
-  pobj <- poutput.theme(pobj, 
-                        theme = theme, 
-                        font = font)
+  pobj <- poutput.theme(pobj, theme = theme, font = font, add_footnote)
   
   if (length(cw) > ncol(df) | length(cw) < ncol(df)) {
     stop("Column width must equal the amount of columns or be a single number")
@@ -69,9 +76,7 @@ poutput <- function(df,
   
 }
 
-poutput.theme <- function(pobj, 
-                          theme, 
-                          font) {
+poutput.theme <- function(pobj, theme, font, add_footnote) {
   if (is.null(font)) {
     font <- "Arial"
   }
@@ -91,6 +96,10 @@ poutput.theme <- function(pobj,
     pobj <- flextable::bold(pobj, part = "header")
     pobj <- flextable::align(pobj, align = "center", part = "all")
     pobj <- flextable::font(pobj, fontname = "Arial", part = "all")
+  }
+  
+  if (!is.null(add_footnote)){ 
+    pobj <- flextable::align(pobj, align = "left", part = "footer")
   }
   
   return(pobj)
