@@ -18,7 +18,7 @@ poutput <- function(df,
                                 ref_symbols = add_footnote[[2]],
                                 value = flextable::as_paragraph(add_footnote[[3]]),
                                 part = "header")
-  }
+    }
   
   if (!is.null(add_header_bot)) {
     pobj <-
@@ -95,12 +95,12 @@ poutput.theme <- function(pobj, theme, font, add_footnote) {
       flextable::hline_top(pobj, border = border, part = "all")
     pobj <- flextable::bold(pobj, part = "header")
     pobj <- flextable::align(pobj, align = "center", part = "all")
-    pobj <- flextable::font(pobj, fontname = "Arial", part = "all")
+    pobj <- flextable::font(pobj, fontname = font, part = "all")
   }
   
   if (!is.null(add_footnote)){ 
     pobj <- flextable::align(pobj, align = "left", part = "footer")
-  }
+    }
   
   return(pobj)
   
