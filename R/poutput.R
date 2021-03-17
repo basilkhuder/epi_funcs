@@ -14,6 +14,7 @@ poutput <- function(df,
                     #first param of extra_align is for type of alignment, second is for column number
                     #extra_align = list(c("left", "center"), c(1,2))
                     inner_border = NULL) {
+  
   pobj <- flextable::flextable(df)
   
   if (!is.null(add_footnote)) {
@@ -132,7 +133,7 @@ poutput.theme <-
     if (!is.null(inner_border)) {
       ib <- officer::fp_border(color = "gray", width = 1)
       pobj <-
-        flextable::border_inner_h(pobj, border = std_border, part = "body")
+        flextable::border_inner_h(pobj, border = ib, part = "body")
       
     }
     
