@@ -9,16 +9,21 @@ poutput <- function(df,
                     font = NULL,
                     theme = "default",
                     add_footnote = NULL,
-                    add_header_bot = NULL) {
-  
+                    add_header_bot = NULL,
+                    extra_align = NULL,
+                    inner_border = NULL) {
   pobj <- flextable::flextable(df)
   
-  if (!is.null(add_footnote)){ 
-    pobj <- flextable::footnote(pobj, i = 1, j = add_footnote[[1]], 
-                                ref_symbols = add_footnote[[2]],
-                                value = flextable::as_paragraph(add_footnote[[3]]),
-                                part = "header")
-    }
+  if (!is.null(add_footnote)) {
+    pobj <- flextable::footnote(
+      pobj,
+      i = 1,
+      j = add_footnote[[1]],
+      ref_symbols = add_footnote[[2]],
+      value = flextable::as_paragraph(add_footnote[[3]]),
+      part = "header"
+    )
+  }
   
   if (!is.null(add_header_bot)) {
     pobj <-
@@ -26,7 +31,13 @@ poutput <- function(df,
     theme <- "header_bot_default"
   }
   
-  pobj <- poutput.theme(pobj, theme = theme, font = font, add_footnote)
+  pobj <-
+    poutput.theme(pobj,
+                  theme = theme,
+                  font = font,
+                  add_footnote,
+                  extra_align,
+                  inner_border)
   
   if (length(cw) > ncol(df) | length(cw) < ncol(df)) {
     stop("Column width must equal the amount of columns or be a single number")
@@ -76,32 +87,50 @@ poutput <- function(df,
   
 }
 
-poutput.theme <- function(pobj, theme, font, add_footnote) {
-  if (is.null(font)) {
-    font <- "Arial"
-  }
-  
-  if (theme == "default") {
-    pobj <- flextable::bold(pobj, part = "header")
-    pobj <- flextable::align(pobj, align = "center", part = "all")
-    pobj <- flextable::font(pobj, fontname = font, part = "all")
-  }
-  
-  if (theme == "header_bot_default") {
-    pobj <- flextable::border_remove(pobj)
-    border <- officer::fp_border(color = "black", width = 2)
-    pobj <- flextable::hline_top(pobj, border = border)
-    pobj <-
-      flextable::hline_top(pobj, border = border, part = "all")
-    pobj <- flextable::bold(pobj, part = "header")
-    pobj <- flextable::align(pobj, align = "center", part = "all")
-    pobj <- flextable::font(pobj, fontname = font, part = "all")
-  }
-  
-  if (!is.null(add_footnote)){ 
-    pobj <- flextable::align(pobj, align = "left", part = "footer")
+poutput.theme <-
+  function(pobj,
+           theme,
+           font,
+           add_footnote,
+           extra_align,
+           inner_border) {
+    if (is.null(font)) {
+      font <- "Arial"
     }
-  
-  return(pobj)
-  
-}
+    
+    if (theme == "default") {
+      pobj <- flextable::bold(pobj, part = "header")
+      pobj <- flextable::align(pobj, align = "center", part = "all")
+      pobj <- flextable::font(pobj, fontname = font, part = "all")
+    }
+    
+    if (theme == "header_bot_default") {
+      pobj <- flextable::border_remove(pobj)
+      border <- officer::fp_border(color = "black", width = 2)
+      pobj <- flextable::hline_top(pobj, border = border)
+      pobj <-
+        flextable::hline_top(pobj, border = border, part = "all")
+      pobj <- flextable::bold(pobj, part = "header")
+      pobj <- flextable::align(pobj, align = "center", part = "all")
+      pobj <- flextable::font(pobj, fontname = font, part = "all")
+    }
+    
+    if (!is.null(add_footnote)) {
+      pobj <- flextable::align(pobj, align = "left", part = "footer")
+    }
+    
+    if (!is.null(extra_align)) {
+      pobj <-
+        flextable::align(pobj, align = extra_align[[1]], j = extra_align[[2]])
+    }
+    
+    if (!is.null(inner_border)) {
+      ib <- officer::fp_border(color = "gray", width = 1)
+      pobj <-
+        flextable::border_inner_h(pobj, border = std_border, part = "body")
+      
+    }
+    
+    return(pobj)
+    
+  }
