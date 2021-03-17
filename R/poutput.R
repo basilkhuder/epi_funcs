@@ -11,6 +11,8 @@ poutput <- function(df,
                     add_footnote = NULL,
                     add_header_bot = NULL,
                     extra_align = NULL,
+                    #first param of extra_align is for type of alignment, second is for column number
+                    #extra_align = list(c("left", "center"), c(1,2))
                     inner_border = NULL) {
   pobj <- flextable::flextable(df)
   
@@ -120,8 +122,11 @@ poutput.theme <-
     }
     
     if (!is.null(extra_align)) {
-      pobj <-
-        flextable::align(pobj, align = extra_align[[1]], j = extra_align[[2]])
+      for (i in seq_along(extra_align)) {
+        pobj <-
+          flextable::align(pobj, align = extra_align[[1]][[i]], j = extra_align[[2]][[i]])
+      }
+      
     }
     
     if (!is.null(inner_border)) {
